@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<main class="report-page"><section class="panel error-panel"><span class="eyebrow">REPORT ACCESS / {{ code }}</span><h1>{{ 'This link has expired.' if code == 410 else 'Report unavailable.' }}</h1><p>{{ message }}</p><a class="primary" href="/">Start a new report ↗</a></section></main>{% endblock %}

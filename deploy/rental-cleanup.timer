@@ -1,0 +1,11 @@
+[Unit]
+Description=Clean expired Departure reports every fifteen minutes
+
+[Timer]
+OnCalendar=*:0/15
+Persistent=true
+RandomizedDelaySec=30
+Unit=rental-cleanup.service
+
+[Install]
+WantedBy=timers.target

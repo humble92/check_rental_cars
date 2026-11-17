@@ -1,0 +1,22 @@
+[Unit]
+Description=Departure analysis and email worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=rental
+Group=rental
+WorkingDirectory=/opt/rental-reports
+EnvironmentFile=/opt/rental-reports/.env
+ExecStart=/opt/rental-reports/.venv/bin/python -m app.worker
+Restart=always
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/rental-reports
+
+[Install]
+WantedBy=multi-user.target

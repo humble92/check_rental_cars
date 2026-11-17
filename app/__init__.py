@@ -1,0 +1,1 @@
+"""Rental condition reporting application."""

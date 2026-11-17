@@ -1,0 +1,16 @@
+[Unit]
+Description=Delete expired Departure reports and files
+
+[Service]
+Type=oneshot
+User=rental
+Group=rental
+WorkingDirectory=/opt/rental-reports
+EnvironmentFile=/opt/rental-reports/.env
+ExecStart=/opt/rental-reports/.venv/bin/python -m app.cleanup
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/rental-reports
