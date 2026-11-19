@@ -43,6 +43,24 @@ Start the worker in a second terminal:
 
 Open **http://127.0.0.1:8000**. Use this exact origin with the default configuration; if you use another hostname or port, update `PUBLIC_BASE_URL` to match. The worker must be running for analysis and email delivery. `python -m app.worker --once` processes at most one eligible job and exits.
 
+### macOS terminals
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.lock.txt
+# Only when .env does not exist:
+test -f .env || cp .env.example .env
+.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --no-access-log
+```
+
+In a second terminal, run `.venv/bin/python -m app.worker`. Set `MUSE_API_KEY` in `.env` before requesting AI analysis.
+
+### VS Code Run and Debug
+
+Install the recommended Python and Python Debugger extensions and complete the virtual environment setup above. Open **Run and Debug**, select **Departure: web + worker**, and press **F5** to start both processes. Open **http://127.0.0.1:8000**. Stopping the compound session stops both processes. Individual **Web server** and **Background worker** configurations are also available; each loads `.env` and uses the project's `.venv` on macOS/Linux or Windows.
+
+Stop any server and worker already running in terminals before starting the compound session, so port 8000 stays available and only one worker runs.
+
 ## Meta vision comparison
 
 This explicitly makes four paid requests: two supplied test images per model. It loads `MUSE_API_KEY` from `.env`, corrects orientation, resizes images, and submits image data URLs to the OpenAI-compatible chat endpoint:

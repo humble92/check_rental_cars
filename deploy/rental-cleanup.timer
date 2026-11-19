@@ -1,8 +1,8 @@
 [Unit]
-Description=Clean expired Departure reports every fifteen minutes
+Description=Clean expired Departure reports daily
 
 [Timer]
-OnCalendar=*:0/15
+OnCalendar=*-*-* 03:00:00 America/Toronto
 Persistent=true
 RandomizedDelaySec=30
 Unit=rental-cleanup.service
