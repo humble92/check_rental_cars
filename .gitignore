@@ -23,5 +23,11 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
+# IDE
+.vscode/
+
+# Local deployment notes with private infrastructure details
+docs/deploy_KR.md
+
 # test resources
 resources/
