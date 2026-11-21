@@ -281,6 +281,11 @@ For a short maintenance deployment:
 sudo systemctl stop rental-web rental-worker
 sudo systemctl stop rental-cleanup.timer rental-cleanup.service
 git pull --ff-only
+```
+
+If `requirements.lock.txt` changed or the virtual environment needs to be rebuilt, install and verify dependencies before starting the services:
+
+```sh
 .venv/bin/python -m pip install --only-binary=pillow-heif -r requirements.lock.txt
 .venv/bin/python -m pip check
 ```
