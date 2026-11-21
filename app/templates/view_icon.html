@@ -1,0 +1,52 @@
+{# Left and right refer to the vehicle as seen by an occupant facing forward. #}
+{% set seat_detail = key in ['left_front', 'left_rear', 'right_front', 'right_rear'] %}
+{% if seat_detail %}
+  {# Keep the bumper and wheel nearest the selected door. #}
+  {% set crop_x = 4 if key in ['left_front', 'right_rear'] else 41 %}
+{% endif %}
+<svg {% if seat_detail %}class="seat-detail" viewBox="{{ crop_x }} 4 55 45" preserveAspectRatio="xMidYMid slice"{% else %}viewBox="0 0 100 54"{% endif %} data-angle="{{ key }}" fill="none" stroke-linecap="round" stroke-linejoin="round">
+{% if key == 'front' %}
+  <path d="M24 25 30 6h40l6 19 5 5v15H19V30Zm0 0h52M33 10h34l5 15H28M19 36h62M23 45v5h10v-5m34 0v5h10v-5"/>
+  <path d="M24 29h13l-2 5H24Zm52 0H63l2 5h11ZM40 32h20m-17 8h14m-14 3h14"/>
+  {# Left-hand-drive steering wheel appears on the viewer's right from the front. #}
+  <g stroke="#3d584c" stroke-width="1.8">
+    <circle cx="61" cy="18" r="5.5"/>
+    <path d="M56 17h10m-5 0v6"/>
+  </g>
+{% elif key == 'rear' %}
+  <path d="M23 25 31 10h38l8 15 4 4v16H19V29Zm0 0h54M34 14h32l5 10H29M33 20h34M19 39h62M23 45v5h10v-5m34 0v5h10v-5"/>
+  <path d="M24 29h12v7H24Zm52 0H64v7h12Z" fill="#a45c48" stroke="#854d40"/>
+  <path d="M42 30h16v7H42Z"/>
+{% elif key in ['front_left', 'front_right', 'rear_left', 'rear_right'] %}
+  {# The base drawing shows the vehicle's right side from the front and left side from the rear. #}
+  <g{% if key in ['front_left', 'rear_right'] %} transform="translate(100 0) scale(-1 1)"{% endif %}>
+    <path d="m12 29 7-12 30-8 25 8 12 14v14l-35 6-39-9Zm7-12 29 7 26-7M48 24l3 27m-36-23 33 8 36-6M24 18l3-5 21-6 17 7M15 42v5m64-1v5"/>
+    <ellipse cx="24" cy="41" rx="4" ry="7"/><ellipse cx="43" cy="46" rx="4" ry="7"/>
+    {% if key.startswith('front') %}
+      <path d="m56 37 10-2v5l-10 2Zm17-3 9-2v5l-9 2ZM62 45l13-2"/>
+      <g transform="translate({{ '57 29' if key == 'front_left' else '72 25' }})" stroke="#3d584c" stroke-width="1.7">
+        <ellipse rx="4" ry="3.3"/>
+        <path d="M-3.6 0h7.2M0 0v3"/>
+      </g>
+    {% else %}
+      <path d="m55 36 8-1v7l-8 1Zm20-4 8-2v7l-8 2Z" fill="#a45c48" stroke="#854d40"/>
+      <path d="m65 41 8-1v5l-8 1Z"/>
+    {% endif %}
+  </g>
+{% else %}
+  {# The base profile has its nose on the right, as viewed from the vehicle's right side. #}
+  <g{% if key.startswith('left') %} transform="translate(100 0) scale(-1 1)"{% endif %}>
+    <path d="M12 35v-9l12-4 9-13h27l14 13 13 4 3 10H12Zm13-13h48M32 20l5-8h20l10 8M49 12v25M29 25v12h40V25M34 28h6m15 0h6"/>
+    <circle cx="25" cy="38" r="7"/><circle cx="76" cy="38" r="7"/>
+    <path d="M13 27h6v4h-6Z" fill="#a45c48" stroke="#854d40"/>
+    <path d="M81 27h6l1 4h-7Z"/>
+    {% if key in ['left_full', 'left_front'] %}
+      <g stroke="#3d584c" stroke-width="1.4">
+        <circle cx="60" cy="18" r="2.7"/>
+        <path d="M57.5 18h5m-2.5 0v2.5"/>
+      </g>
+    {% endif %}
+    {% if key.endswith('front') %}<path d="M51 24h17v12H51Z" fill="#6d896d" fill-opacity=".3" stroke="#3d584c" stroke-width="2"/>{% elif key.endswith('rear') %}<path d="M30 24h17v12H30Z" fill="#6d896d" fill-opacity=".3" stroke="#3d584c" stroke-width="2"/>{% endif %}
+  </g>
+{% endif %}
+</svg>

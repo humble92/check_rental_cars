@@ -260,3 +260,44 @@ def test_draft_retention_rate_limit_and_no_lifetime_extension(setup):
     for _ in range(9):
         assert client.post("/api/reports", json={}).status_code == 201
     assert client.post("/api/reports", json={}).status_code == 429
+
+
+@pytest.mark.parametrize("with_gps", [True, False])
+def test_original_download_preserves_uploaded_bytes_and_gps(setup, with_gps):
+    import hashlib
+    from PIL.TiffImagePlugin import IFDRational
+
+    client, settings = setup
+    session, headers = create_report(client)
+    exif = Image.Exif()
+    exif[36867] = "2026:11:21 10:30:00"
+    if with_gps:
+        exif[34853] = {
+            1: "N", 2: (IFDRational(43), IFDRational(39), IFDRational(12)),
+            3: "W", 4: (IFDRational(79), IFDRational(23), IFDRational(24)),
+        }
+    buffer = io.BytesIO()
+    Image.new("RGB", (800, 600), "silver").save(buffer, "JPEG", exif=exif)
+    original = buffer.getvalue()
+    response = client.post("/api/reports/%s/photos?view=front&filename=gps.jpg" % session["id"],
+                           headers=headers, content=original)
+    assert response.status_code == 201
+    with connect(settings) as db:
+        photo = db.execute("SELECT * FROM photos WHERE report_id=?", (session["id"],)).fetchone()
+        assert photo["sha256"] == hashlib.sha256(original).hexdigest()
+        assert (report_dir(settings, session["id"]) / photo["original"]).read_bytes() == original
+    assert client.post("/api/reports/%s/analyze" % session["id"], headers=headers).status_code == 202
+    run_job(settings, claim(settings))
+    response = client.get("/r/%s/download/photos" % session["share_token"])
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        downloaded = archive.read(archive.namelist()[0])
+    assert downloaded == original
+    with Image.open(io.BytesIO(downloaded)) as image:
+        gps = image.getexif().get_ifd(34853)
+        if with_gps:
+            assert gps[1] == "N" and gps[3] == "W"
+            assert tuple(gps[2]) == (43, 39, 12)
+            assert tuple(gps[4]) == (79, 23, 24)
+        else:
+            assert not gps

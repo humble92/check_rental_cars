@@ -11,7 +11,7 @@ An English, login-free web app for documenting a rental vehicle before driving a
 - Twelve optional recommended exterior views, plus any additional interior/exterior/detail photos. One photo is sufficient; missing views appear in the report.
 - JPEG, PNG, WebP, and HEIC uploads, orientation correction, private original storage, normalized analysis copies, per-photo retry, and draft recovery in the same browser.
 - AI observations with evidence photos, optional numbered bounding boxes, uncertainty, quality limitations, and separate user notes.
-- Matching HTML/PDF content, original-photo ZIP downloads, and optional SMTP delivery with PDF attachment up to 8 MiB.
+- Matching HTML/PDF content, original-photo ZIP downloads, and optional SMTP delivery with a PDF attachment or download link.
 - Independent read and owner tokens; shared URLs cannot modify reports or send email.
 - Durable SQLite jobs, bounded retries, per-photo checkpoints, lease recovery, and separate cleanup scheduling.
 - English UI, documentation, and code. MIT license.
@@ -165,6 +165,8 @@ On Windows, create a Task Scheduler task every 15 minutes with the virtual envir
 ## Email and public deployment
 
 Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM`, and, if required, `SMTP_USER` / `SMTP_PASSWORD`. Port 587 with STARTTLS is the default. This adapter uses SMTP with optional STARTTLS, not implicit TLS on port 465. Until configured, email is visibly disabled; downloads and share links still work. Verify your sender domain with your email provider before production use.
+
+The PDF is attached when the encoded email is at most 25,000,000 bytes and within any lower size limit advertised by the SMTP server. For larger messages, the email explains why the PDF was omitted and includes a direct download link that expires with the report.
 
 Set `PUBLIC_BASE_URL` to the exact HTTPS public origin with no trailing path. Terminate TLS at a reverse proxy; an Nginx example is included. Disable access logging for token-bearing URLs at both proxy and application layers. Keep storage out of the static web root. Configure trusted proxy forwarding only for your own proxy. Basic creation limits are 10 reports/hour/client IP; email is limited to 3 requests/hour/report. Add edge-level connection/rate limits and an overall provider budget before accepting untrusted public traffic.
 
