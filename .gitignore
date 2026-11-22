@@ -31,3 +31,6 @@ docs/deploy_KR.md
 
 # test resources
 resources/
+
+# large media files
+docs/media/

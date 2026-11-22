@@ -1,6 +1,14 @@
 # Departure - rental condition reports
 
-An English, login-free web app for documenting a rental vehicle before driving away. Users upload photos, request an AI review, read an HTML report, download a PDF and original-photo ZIP, and optionally email the report. A read-only result link expires seven days after report generation.
+[Open Departure](https://rental-cars.ninefruits.work/)
+
+[![Watch the Departure quick guide on YouTube](docs/images/demo-video.jpg)](https://youtu.be/x0mGDSgMPH8)
+
+[Watch the quick guide on YouTube](https://youtu.be/x0mGDSgMPH8)
+
+Departure helps renters spot and document existing damage at pickup. Before driving away, walk around the car and photograph every side, including panels that look fine. The AI reviews the photos for scratches, dents, and other marks you may have missed. Check anything it flags against the car while you are still there.
+
+Keep the PDF report and original photos. If the rental company later charges you for damage, you can point to the pickup photo that shows the mark and share it alongside the report. The AI describes what is visible in each image. It cannot determine when damage occurred or who caused it.
 
 **AI provider: Meta Model API.** Both `muse-spark-1.3-contributor` and `muse-ember-1.0` successfully analyzed the two supplied test images and returned valid application JSON. The default is the configured `MUSE_MODEL` (Contributor). Baseten was tested first but its configured model was deactivated; the application no longer calls Baseten. It never substitutes fabricated observations for a failed provider request.
 
@@ -8,7 +16,7 @@ An English, login-free web app for documenting a rental vehicle before driving a
 
 ## Features
 
-- Twelve optional recommended exterior views, plus any additional interior/exterior/detail photos. One photo is sufficient; missing views appear in the report.
+- Twelve suggested views guide a walk around the front, rear, corners, and sides. Add close-ups of details such as wheels, mirrors, or trim. Partial coverage is supported, and the report lists missing views.
 - JPEG, PNG, WebP, and HEIC uploads, orientation correction, private original storage, normalized analysis copies, per-photo retry, and draft recovery in the same browser.
 - AI observations with evidence photos, optional numbered bounding boxes, uncertainty, quality limitations, and separate user notes.
 - Matching HTML/PDF content, original-photo ZIP downloads, and optional SMTP delivery with a PDF attachment or download link.
